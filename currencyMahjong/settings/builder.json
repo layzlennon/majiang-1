@@ -1,0 +1,24 @@
+{
+  "appKey": "",
+  "appSecret": "",
+  "excludeScenes": [],
+  "includeAnySDK": false,
+  "includeSdk": [
+    "anysdk"
+  ],
+  "inlineSpriteFrames": true,
+  "mergeStartScene": false,
+  "oauthLoginServer": "",
+  "orientation": {
+    "landscapeLeft": true,
+    "landscapeRight": true,
+    "portrait": false,
+    "upsideDown": false
+  },
+  "packageName": "org.cocos2d.currencyMahjong",
+  "privateKey": "",
+  "renderMode": "0",
+  "startScene": "6a8ea38c-2ff3-4e40-b8c6-870cd61e1937",
+  "title": "currencyMahjong",
+  "webOrientation": "landscape"
+}
