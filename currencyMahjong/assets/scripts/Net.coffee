@@ -101,7 +101,7 @@ Global = cc.Class {
             if this.fnDisconnect
                 this.fnDisconnect()
                 this.fnDisconnect = null
-                this.sio.disconnect()
+                # this.sio.disconnect()
                 this.sio = null
     }
 }

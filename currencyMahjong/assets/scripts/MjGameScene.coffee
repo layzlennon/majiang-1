@@ -16,6 +16,9 @@ cc.Class {
 
         this.addComponent "MjRoom"
         this.addComponent "Alert"
+        this.addComponent "Dissolve"
+        this.addComponent "Setting"
+
         this.initEventHandlers()
 
         if cc.vv.gameNetMgr.isHostUser()
@@ -26,7 +29,10 @@ cc.Class {
         cc.vv.gameNetMgr.dataEventHandler = this.node
         self = this
         this.node.on()
-
+    showSettingUI: () ->
+        if cc.vv.setting
+            cc.vv.setting.showSetting()
+            
     update: (dt) ->
         # do your update here
 

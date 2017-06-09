@@ -11,6 +11,7 @@ cc.Class {
         seatLocalIndex: -1,
         dataEventHandler: null,
         dissoveData: null,
+        isGameIn: false
     }
     getSeatIndexByID: (userId) ->
         for i in [0...this.seats.length]
@@ -65,10 +66,6 @@ cc.Class {
             console.log "user_ready_push : " + JSON.stringify data
             self.dispatchEvent 'user_state_changed'
         
-        cc.vv.net.addHandler "game_begin_push", (data) ->
-            console.log "game_begin_push" + JSON.stringify data
-            self.dispatchEvent 'game_begin'
-
         cc.vv.net.addHandler "exit_result", (data) ->
             console.log "exit_result" + JSON.stringify data
             self.roomId = null
@@ -89,6 +86,21 @@ cc.Class {
             console.log "dissolve_cancel_push" + JSON.stringify data
             self.dissoveData = null
             self.dispatchEvent "dissolve_cancel", data
+        
+         cc.vv.net.addHandler "game_over_push", (data) ->
+            console.log "game_over_push" + JSON.stringify data
+            self.dispatchEvent "game_over", data
+
+            if not self.isGameIn
+                cc.director.loadScene "HallScene"
+            self.isGameIn = false
+        
+
+        cc.vv.net.addHandler "game_begin_push", (data) ->
+            console.log "game_begin_push" + JSON.stringify data
+            self.isGameIn = true
+            self.dispatchEvent 'game_begin'
+        
 
         cc.vv.net.addHandler "exit_notify_push", (data) ->
             console.log "exit_notify_push" + JSON.stringify data

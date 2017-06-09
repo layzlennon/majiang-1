@@ -131,6 +131,7 @@ cc.Class {
         cc.vv.utils = new Utils()
 
         cc.args = this.urlParse()
+        # http://localhost:7456/?account=asdf1
 
     urlParse: () ->
         params = {}
