@@ -36,11 +36,11 @@ cc.Class {
             if ret.errcode is 0
                 self.node.active = false
             else
-                connent = "房间[" + roomId + "]不存在，请重新输入!"
+                content = "房间[" + roomId + "]不存在，请重新输入!"
                 if ret.errcode is 1
-                    connent = "房间[" + roomId + "]已满!"
+                    content = "房间[" + roomId + "]已满!"
                 cc.vv.alert.show "提示", content
-                this.onResetClicked()
+                self.onResetClicked()
             )
     parseRoomID: () ->
         str = ""

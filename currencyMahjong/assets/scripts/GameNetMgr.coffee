@@ -11,7 +11,8 @@ cc.Class {
         seatLocalIndex: -1,
         dataEventHandler: null,
         dissoveData: null,
-        isGameIn: false
+        isGameIn: false,
+        isDessolevF: false
     }
     getSeatIndexByID: (userId) ->
         for i in [0...this.seats.length]
@@ -23,6 +24,7 @@ cc.Class {
         self = this
         cc.vv.net.addHandler "login_result" , (data) ->
             console.log "login_result : " + JSON.stringify data
+            self.isDessolevF =  false
             if data.errcode is 0
                 msgData = data.data
                 self.roomId = msgData.roomid
@@ -38,12 +40,14 @@ cc.Class {
 
 
         cc.vv.net.addHandler "login_finished", (data) ->
-            console.log "loagin_finished" + JSON.stringify data
+            console.log "loagin_finished " + JSON.stringify data
             cc.director.loadScene "MjGameScene"
         cc.vv.net.addHandler "disconnect", () ->
-            console.log "disconnect"
+            console.log "disconnect............"
             if self.roomId == null
-                cc.director.loadScene "HallScene"
+                if not self.isDessolevF
+                    cc.director.loadScene "HallScene"
+                
             else
                 if not self.isOver
                     self.dispatchEvent "disconnect"
@@ -54,17 +58,23 @@ cc.Class {
                 self.seats[seatIndex].online = true
             else
                 self.seats[seatIndex] = data
-            console.log "new_user_comes_push" +
                 JSON.stringify self.seats[seatIndex]
             self.dispatchEvent "new_user", self.seats[seatIndex]
 
         cc.vv.net.addHandler "user_state_push", (data) ->
-            console.log "new_user_comes_push: " + JSON.stringify data
-            self.dispatchEvent 'user_state_changed'
+            console.log "user_state_push: " + JSON.stringify data
+            if not self.isDessolevF and self.roomId and self.seats
+                userId = data.userid
+                seat = self.getSeatByID userId
+                seat.online = data.online
+                self.dispatchEvent 'user_state_changed', seat
         
         cc.vv.net.addHandler "user_ready_push", (data) ->
             console.log "user_ready_push : " + JSON.stringify data
-            self.dispatchEvent 'user_state_changed'
+            userId = data.userid
+            seat = self.getSeatByID userId
+            seat.ready = data.ready
+            self.dispatchEvent 'user_state_changed', seat
         
         cc.vv.net.addHandler "exit_result", (data) ->
             console.log "exit_result" + JSON.stringify data
@@ -76,6 +86,13 @@ cc.Class {
             console.log "dispress_push" + JSON.stringify data
             self.roomId = null
             self.seats = null
+            if self.isHostUser()
+                return
+
+            self.isDessolevF = true
+            fn = () ->
+                cc.director.loadScene "HallScene"
+            cc.vv.alert.show "提示", "房主已经解散房间了，点击确定返回大厅", fn , true
 
         cc.vv.net.addHandler "dissolve_notice_push", (data) ->
             console.log "dissolve_notice_push" + JSON.stringify data
@@ -111,6 +128,10 @@ cc.Class {
                 s.name = ""
                 self.dispatchEvent "user_state_changed", s
         
+        cc.vv.net.addHandler "table_call_push", (data) ->
+            console.log "table_call_push" + JSON.stringify data
+            self.dispatchEvent 'table_call'
+
     getLocalIndex: (seatIndex) ->
         index = (seatIndex - this.seatLocalIndex + 4) % 4
         return index

@@ -25,6 +25,10 @@ cc.Class {
         headIcon: {
             default: null,
             type: cc.Node
+        },
+        nameBg: {
+            default: null
+            type: cc.Node
         }
         
         _name: "",
@@ -38,18 +42,25 @@ cc.Class {
     }
 
     onLoad: () ->
-        this.node.active = false
-        this.voiceMsg = false
         this.refresh()
 
     refresh: () ->
         this.onLine.active = this._onLine
-        this.nickName.string = this._name
         this.score.string = this._score
         this.ready.active = this._ready
 
-        this.node.active = this._userId > 0
-
+        if this._userId > 0
+            this.nameBg.active = true
+            this.nickName.node.active = true
+            this.nickName.string = this._name
+            this.score.node.active = true
+        else
+            this.voiceMsg.active = false
+            this.onLine.active = false
+            this.nickName.node.active = false
+            this.ready.active = false
+            this.score.node.active = false
+            this.nameBg.active = false
     setInfo: (seatInfo) ->
         cc.log "setInfo : " + JSON.stringify seatInfo
         this._name = seatInfo.name

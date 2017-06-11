@@ -7,6 +7,9 @@ cc.Class {
         _seatsData: null,
         _seats: [],
         _lastMinute: null,
+        _ownSeat: null,
+        _weiXinInvate: null,
+        _readyButton: null,
 
 
     }
@@ -16,22 +19,34 @@ cc.Class {
         this.initView()
         this.initEventHandlers()
         this.initSeats()
+
     initSeats: () ->
-        seats = cc.vv.gameNetMgr.seats
+        
         for i in [0...this._seatsData.length]
-            if seats[i].userid > 0
-                this.initSingleSeat seats[i]
+            seatData = this._seatsData[i]
+            if seatData.userid > 0
+                this.initSingleSeat seatData
 
     initSingleSeat: (seat) ->
         index = cc.vv.gameNetMgr.getLocalIndex seat.seatindex
+
         this._seats[index].setInfo seat
+
+        if index is 0
+            if seat.ready
+                this._weiXinInvate.active = true
+                this._readyButton.active = false
+            else
+                this._weiXinInvate.active = false
+                this._readyButton.active = true
 
     initView: () ->
         this._seatsData = cc.vv.gameNetMgr.seats
+
         seatReady = this.node.getChildByName "SeatReady"
-        seats = seatReady.getChildByName "Seats"
-        for i in [0...seats.children.length]
-            seatComponent = seats.children[i].getComponent("Seat")
+        seatsNode = seatReady.getChildByName "Seats"
+        for i in [0...seatsNode.children.length]
+            seatComponent = seatsNode.children[i].getComponent("Seat")
             this._seats.push seatComponent
         
         component = cc.find "Canvas/HeadTileInfo/TableNoLabel"
@@ -40,14 +55,14 @@ cc.Class {
         component = cc.find "Canvas/HeadTileInfo/TimeLabel"
         this._timeLabel = component.getComponent cc.Label
 
-        weiXinInvate = cc.find "Canvas/WeiXinInvate"
-        if weiXinInvate
-            cc.vv.utils.addClickEvent weiXinInvate,
+        this._weiXinInvate = cc.find "Canvas/SeatReady/WeiXinInvate"
+        if this._weiXinInvate
+            cc.vv.utils.addClickEvent this._weiXinInvate,
                 this.node, "MjRoom", "onBtnWeichatClicked"
         
-        readyButton = cc.find "Canvas/ReadyButton"
-        if readyButton
-            cc.vv.utils.addClickEvent readyButton,
+        this._readyButton = cc.find "Canvas/SeatReady/ReadyButton"
+        if this._readyButton
+            cc.vv.utils.addClickEvent this._readyButton,
                 this.node, "MjRoom", "onBtnReadyClicked"
         
         quitButton = cc.find "Canvas/HeadTileInfo/QuitButton"
@@ -61,6 +76,9 @@ cc.Class {
             console.log "new_user : " + JSON.stringify data.detail
             self.initSingleSeat data.detail
         
+        this.node.on 'user_state_changed', (data) ->
+            console.log "user_state_changed : " + JSON.stringify data.detail
+            self.initSingleSeat data.detail
 
     onBtnExitClicked: () -> #退出房间
         if cc.vv.gameNetMgr.isHostUser()
@@ -77,7 +95,7 @@ cc.Class {
         #"房号:" + cc.vv.gameNetMgr.roomId + " 玩法:" +
         #cc.vv.gameNetMgr.getWanfa());
     onBtnReadyClicked: () ->
-
+        cc.vv.net.send "ready"
     update: (dt) ->
         # do your update here
         minutes = Date.now() / 1000 / 60

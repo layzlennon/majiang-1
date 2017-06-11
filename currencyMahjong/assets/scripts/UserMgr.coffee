@@ -32,6 +32,7 @@ cc.Class {
         self = this
         
         onEnter = (ret) ->
+            console.log "ret : " + JSON.stringify ret
             if ret.errcode isnt 0
                 if ret.errcode is -1
                     fn = () ->
