@@ -11,7 +11,6 @@ cc.Class {
         _weiXinInvate: null,
         _readyButton: null,
 
-
     }
 
     onLoad: () ->
@@ -30,6 +29,8 @@ cc.Class {
     initSingleSeat: (seat) ->
         index = cc.vv.gameNetMgr.getLocalIndex seat.seatindex
 
+        cc.vv.playersManager._players[index].refreshBaseInfo seat
+        
         this._seats[index].setInfo seat
 
         if index is 0
@@ -41,10 +42,11 @@ cc.Class {
                 this._readyButton.active = true
 
     initView: () ->
-        this._seatsData = cc.vv.gameNetMgr.seats
 
+        this._seatsData = cc.vv.gameNetMgr.seats
         seatReady = this.node.getChildByName "SeatReady"
         seatsNode = seatReady.getChildByName "Seats"
+
         for i in [0...seatsNode.children.length]
             seatComponent = seatsNode.children[i].getComponent("Seat")
             this._seats.push seatComponent
@@ -75,11 +77,11 @@ cc.Class {
         this.node.on 'new_user', (data) ->
             console.log "new_user : " + JSON.stringify data.detail
             self.initSingleSeat data.detail
-        
+            
         this.node.on 'user_state_changed', (data) ->
             console.log "user_state_changed : " + JSON.stringify data.detail
             self.initSingleSeat data.detail
-
+        
     onBtnExitClicked: () -> #退出房间
         if cc.vv.gameNetMgr.isHostUser()
             this.onBtnDissolve()

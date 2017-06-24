@@ -61,6 +61,8 @@ cc.Class {
             this.ready.active = false
             this.score.node.active = false
             this.nameBg.active = false
+    refreshTiles: () ->
+        
     setInfo: (seatInfo) ->
         cc.log "setInfo : " + JSON.stringify seatInfo
         this._name = seatInfo.name

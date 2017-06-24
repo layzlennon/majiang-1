@@ -19,7 +19,7 @@ cc.Class {
 
         cc.vv.utils.addClickEvent(this._btnOK, this.node,
                             "Alert", "onBtnClicked")
-
+        
         this._alert.active = false
         cc.vv.alert = this
     onBtnClicked: (event) ->

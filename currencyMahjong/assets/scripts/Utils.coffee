@@ -2,14 +2,7 @@ cc.Class {
     extends: cc.Component
 
     properties: {
-        # foo:
-        #   default: null      # The default value will be used only when the component attaching
-        #                        to a node for the first time
-        #   type: cc
-        #   serializable: true # [optional], default is true
-        #   visible: true      # [optional], default is true
-        #   displayName: 'Foo' # [optional], default is property name
-        #   readonly: false    # [optional], default is false
+    
     }
 
     addClickEvent: (node, target, component, handler) ->
@@ -27,6 +20,12 @@ cc.Class {
 
         slideEvents = node.getComponent(cc.Slider).slideEvents
         slideEvents.push eventHandler
+
+    runSendTileAction: (tileNode) ->
+        pos = tileNode.getPosition()
+        tileNode.setPosition(cc.pAdd(pos,cc.p(0, 20)))
+        actMove = cc.moveTo(0.5,pos)
+        tileNode.runAction(cc.EaseElasticOut.create(actMove, 0.2))
     update: (dt) ->
         # do your update here
 }

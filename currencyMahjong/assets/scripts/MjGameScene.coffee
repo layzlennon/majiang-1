@@ -11,73 +11,59 @@ cc.Class {
             default: null,
             type: cc.Button
         },
-        playTileNode: {
+        standNode: {
             default: null,
-            type: cc.Prefab
+            type: cc.Node
         },
-        tilesDownNode: {
+        localStandUpTile: {
             default: null,
-            type: cc.Prefab
+            type: cc.Node
         },
-        tilesLeftRightNode: {
-            default: null,
-            type: cc.Prefab
-        },
-        tilesUpNode: {
-            default: null,
-            type: cc.Prefab
-        },
+        _headTileInfo: null,
+        _gameNode: null,
+        _tilesNode: null,
         
     }
     onLoad: () ->
 
-        # this.addComponent "MjRoom"
-        # this.addComponent "Alert"
-        # this.addComponent "Dissolve"
-        # this.addComponent "Setting"
+        this.addComponent "Alert"
+        this.addComponent "Dissolve"
+        this.addComponent "Setting"
+        this.addComponent "PlayersManage"
+        this.addComponent "MjRoom"
+        
+    
+        this._headTileInfo = this.node.getChildByName "HeadTileInfo"
+        this._seatReady = this.node.getChildByName "SeatReady"
+        this._gameNode = this.node.getChildByName "GameNode"
+        this.initEventHandlers()
+        
+        if cc.vv.gameNetMgr.isHostUser()
+                argetSprite = this.quitButton.getComponent cc.Sprite
+                argetSprite.spriteFrame = this.quitButtonSprite
+        
+        
+        
 
-        # this.initEventHandlers()
-
-        # if cc.vv.gameNetMgr.isHostUser()
-        #         argetSprite = this.quitButton.getComponent cc.Sprite
-        #         argetSprite.spriteFrame = this.quitButtonSprite
-        tiles = [32, 36, 17, 6, 15, 34, 34, 8, 33, 36, 9, 27, 13]
-        sortNumber = ( a, b ) ->
-            return a < b
-        tiles.sort(sortNumber)
-        console.log tiles
-        StandNode = cc.find "Canvas/GameNode/Player0/StandRoot/StandNode"
-        for i in [0 ... 13]
-            playTile = cc.instantiate this.tilesDownNode
-            playTile.getComponent('TilesDown').setConfig { tile: tiles[i] }
-            StandNode.addChild playTile
-            playTile.setPosition(cc.p(i * 65 * -1 - 165, 0))
-        StandNode = cc.find "Canvas/GameNode/Player1/StandNode"
-        for i in [0 ... 13]
-            playTile = cc.instantiate this.tilesLeftRightNode
-            playTile.getComponent('TilesLeftRight').setConfig { left: false,
-            open: false, down: false, play: false , standUp: true }
-            StandNode.addChild playTile
-            playTile.setPosition(cc.p(0, i * 25 * -1))
-        StandNode = cc.find "Canvas/GameNode/Player3/StandNode"
-
-        for i in [0 ... 13]
-            playTile = cc.instantiate this.tilesLeftRightNode
-            playTile.getComponent('TilesLeftRight').setConfig { left: true,
-            open: false, down: false, play: false, standUp: true }
-            StandNode.addChild playTile
-            playTile.setPosition(cc.p(0, i * 25 * -1))
-        StandNode = cc.find "Canvas/GameNode/Player2/StandRoot/StandNode"
-        for i in [0 ... 13]
-            playTile = cc.instantiate this.tilesUpNode
-            playTile.getComponent('TilesUp').setConfig { open: false,
-            down: false, play: false, standUp: true }
-            StandNode.addChild playTile
-            playTile.setPosition(cc.p(i * 40, 0))
     initEventHandlers: () ->
         cc.vv.gameNetMgr.dataEventHandler = this.node
         self = this
-        this.node.on()
+        this.node.on "game_begin", (data) ->
+            self.onGameBeign()
+    refreshSendTile: (seatId) ->
+        console.log "refreshSendTile: " + seatId
+        player = cc.vv.playersManager._players[seatId]
+        playTile = player._tile
+        playTile = cc.instantiate this._tilesNode[seatId]["tileNode"]
+        pTileC = playTile.getComponent this._tilesNode[seatId]["commponentName"]
+        player._parentNode.addChild playTile
+        playTile.setPosition(cc.p(-80, 0))
+
+    onGameBeign: () ->
+        this._headTileInfo.active = false
+        this._seatReady.active = false
+        this._gameNode.active = true
+
     showSettingUI: () ->
         if cc.vv.setting
             cc.vv.setting.showSetting()

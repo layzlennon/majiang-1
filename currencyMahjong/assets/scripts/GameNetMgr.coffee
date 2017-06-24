@@ -130,7 +130,7 @@ cc.Class {
         
         cc.vv.net.addHandler "table_call_push", (data) ->
             console.log "table_call_push" + JSON.stringify data
-            self.dispatchEvent 'table_call'
+            self.dispatchEvent 'table_call', data
 
     getLocalIndex: (seatIndex) ->
         index = (seatIndex - this.seatLocalIndex + 4) % 4
