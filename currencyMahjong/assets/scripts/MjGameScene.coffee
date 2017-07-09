@@ -22,6 +22,7 @@ cc.Class {
         _headTileInfo: null,
         _gameNode: null,
         _tilesNode: null,
+        _juShuZhangShu: null
         
     }
     onLoad: () ->
@@ -29,7 +30,6 @@ cc.Class {
         this.addComponent "Alert"
         this.addComponent "Dissolve"
         this.addComponent "Setting"
-        this.addComponent "PlayersManage"
         this.addComponent "MjRoom"
         
     
@@ -38,31 +38,43 @@ cc.Class {
         this._gameNode = this.node.getChildByName "GameNode"
         this.initEventHandlers()
         
-        if cc.vv.gameNetMgr.isHostUser()
+        if cc.director.TableGlobalData.isHostUser()
                 argetSprite = this.quitButton.getComponent cc.Sprite
                 argetSprite.spriteFrame = this.quitButtonSprite
         
         
         
-
+        
+        # component = cc.find "Canvas/GameNode/JuShu"
+        # this._juShuZhangShu = component.getComponent cc.Label
+    start: () ->
+        console.log "mjGameScene ........."
+        if cc.director.TableGlobalData.getGameIn()
+            this.onGameBeign()
+            seats = cc.director.TableGlobalData.getSeats()
+            for i in [0...seats.length]
+                if seats[i].userid > 0
+                    localIndex = cc.director.TableGlobalData.getLocalIndex seats[i].seatindex
+                    console.log "localIndex : " + localIndex
+                    cc.director.GlobalEvent.emit "refresh_all", {
+                            seatId: localIndex
+                        }
     initEventHandlers: () ->
         cc.vv.gameNetMgr.dataEventHandler = this.node
         self = this
-        this.node.on "game_begin", (data) ->
-            self.onGameBeign()
-    refreshSendTile: (seatId) ->
-        console.log "refreshSendTile: " + seatId
-        player = cc.vv.playersManager._players[seatId]
-        playTile = player._tile
-        playTile = cc.instantiate this._tilesNode[seatId]["tileNode"]
-        pTileC = playTile.getComponent this._tilesNode[seatId]["commponentName"]
-        player._parentNode.addChild playTile
-        playTile.setPosition(cc.p(-80, 0))
+        cc.director.GlobalEvent.on "game_begin", this.onGameBeign, this
+    
 
     onGameBeign: () ->
-        this._headTileInfo.active = false
+        console.log "onGameBeign: "
+        # this._headTileInfo.active = false
         this._seatReady.active = false
         this._gameNode.active = true
+
+        component = cc.find "Canvas/HeadTileInfo/TableNoLabel"
+        this.tableNoLabel = component.getComponent cc.Label
+        this.tableNoLabel.string = "房间: " + cc.director.TableGlobalData.getRoomId()
+
 
     showSettingUI: () ->
         if cc.vv.setting

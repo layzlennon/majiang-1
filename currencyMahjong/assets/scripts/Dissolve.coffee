@@ -38,9 +38,10 @@ cc.Class {
     showDissolveNotice: (data) ->
         this._endTime = Date.now() / 1000 + data.time
         this._extraInfo = ""
+        seats = cc.director.TableGlobalData.getSeats()
         for i in [0...data.states.length]
             b = data.states[i]
-            name = cc.vv.gameNetMgr.seats[i].name
+            name = seats[i].name
             if b
                 this._extraInfo += "\n[已同意] " + name
             else

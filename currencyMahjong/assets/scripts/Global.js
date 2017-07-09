@@ -1,6 +1,7 @@
 //全局事件
 cc.director.GlobalEvent = {
     handles_: {},
+
     //发送事件
     emit: function (eventName, data) {
         var returns = [] //返回值

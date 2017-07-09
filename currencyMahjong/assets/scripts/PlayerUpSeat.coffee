@@ -22,6 +22,10 @@ cc.Class {
             default: null,
             type: cc.Node
         },
+        playNode: {
+            default: null,
+            type: cc.Node
+        },
         chiPengGang: {
             default: null,
             type: cc.Node
@@ -45,19 +49,32 @@ cc.Class {
         cc.director.GlobalEvent.on "peng", this.peng, this
         cc.director.GlobalEvent.on "gang", this.gang, this
         cc.director.GlobalEvent.on "play", this.play, this
-
+        cc.director.GlobalEvent.on "refresh_all", this.refreshAll , this
+    
+    refreshAll: (data) ->
+        console.log " upSeat refreshAll data " + JSON.stringify data
+        if data.seatId isnt this._seatId
+            return
+        this.init_tiles(data)
+        this.chi(data)
+        this.peng(data)
+        this.gang(data)
     init_tiles: (data) ->
-        console.log " init_tiles data " + JSON.stringify data
+        # console.log " init_tiles data " + JSON.stringify data
         if data.seatId isnt this._seatId
             return
         console.log " up stand_tiles: " + this._playerData._standUpTiles
-        this.standNode.removeAllChildren()
+        # this.standNode.removeAllChildren()
         for i in [0...this._playerData._standUpTiles.length]
             tile = cc.instantiate this.upStandUpTile
             this.standNode.addChild tile
-            tile.setPosition(cc.p(i * 40, 0))
+            tile.setPosition(cc.p(40 * i, 0))
+            tile.active = true
+            console.log "i       : " + i
+        this.standNode.active = true
+        console.log "pos : " + this.standNode.getPosition()
     send_tile: (data) ->
-        console.log " send_tile data " + JSON.stringify data
+        # console.log " send_tile data " + JSON.stringify data
         if data.seatId isnt this._seatId
             return
         console.log "up send_tile: " + this._playerData._send_tile

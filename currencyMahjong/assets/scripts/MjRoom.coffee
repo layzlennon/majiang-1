@@ -27,7 +27,7 @@ cc.Class {
                 this.initSingleSeat seatData
 
     initSingleSeat: (seat) ->
-        index = cc.vv.gameNetMgr.getLocalIndex seat.seatindex
+        index = cc.director.TableGlobalData.getLocalIndex seat.seatindex
 
         cc.vv.playersManager._players[index].refreshBaseInfo seat
         
@@ -43,7 +43,7 @@ cc.Class {
 
     initView: () ->
 
-        this._seatsData = cc.vv.gameNetMgr.seats
+        this._seatsData = cc.director.TableGlobalData.getSeats()
         seatReady = this.node.getChildByName "SeatReady"
         seatsNode = seatReady.getChildByName "Seats"
 
@@ -53,7 +53,7 @@ cc.Class {
         
         component = cc.find "Canvas/HeadTileInfo/TableNoLabel"
         this.tableNoLabel = component.getComponent cc.Label
-        this.tableNoLabel.string = "房间: " + cc.vv.gameNetMgr.roomId
+        this.tableNoLabel.string = "房间: " + cc.director.TableGlobalData.getRoomId()
         component = cc.find "Canvas/HeadTileInfo/TimeLabel"
         this._timeLabel = component.getComponent cc.Label
 
@@ -83,7 +83,7 @@ cc.Class {
             self.initSingleSeat data.detail
         
     onBtnExitClicked: () -> #退出房间
-        if cc.vv.gameNetMgr.isHostUser()
+        if cc.director.TableGlobalData.isHostUser()
             this.onBtnDissolve()
         else
             cc.vv.net.send "exit"

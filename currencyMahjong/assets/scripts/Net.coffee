@@ -88,10 +88,21 @@ Global = cc.Class {
                 if data isnt null and typeof data is "object"
                     data = JSON.stringify data
                 
+                console.log("sendC2Smsg: " + JSON.stringify(data))
                 this.sio.emit event, data
         
         ping: () ->
             this.send 'game_ping'
+        sendPlayTile: (tile) ->
+            param = {
+                action: 'play'
+                tile: tile
+            }
+            this.sendTableCallGet param
+        sendTableCallGet: (data) ->
+            data['roomId'] = cc.director.TableGlobalData.getRoomId() 
+            data['seatId'] = cc.director.TableGlobalData.getSeatId()
+            this.send 'table_call_get', data
         close: () ->
             console.log "close"
             if this.sio and this.sio.connected

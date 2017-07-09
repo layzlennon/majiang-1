@@ -22,6 +22,10 @@ cc.Class {
             default: null,
             type: cc.Node
         },
+        playNode: {
+            default: null,
+            type: cc.Node
+        },
         chiPengGang: {
             default: null,
             type: cc.Node
@@ -44,9 +48,18 @@ cc.Class {
         cc.director.GlobalEvent.on "peng", this.peng, this
         cc.director.GlobalEvent.on "gang", this.gang, this
         cc.director.GlobalEvent.on "play", this.play, this
-
+        cc.director.GlobalEvent.on "refresh_all", this.refreshAll , this
+    
+    refreshAll: (data) ->
+        # console.log " rightSeat refreshAll data " + JSON.stringify data
+        if data.seatId isnt this._seatId
+            return
+        this.init_tiles(data)
+        this.chi(data)
+        this.peng(data)
+        this.gang(data)
     init_tiles: (data) ->
-        console.log " init_tiles data " + JSON.stringify data
+        # console.log " init_tiles data " + JSON.stringify data
         if data.seatId isnt this._seatId
             return
         console.log "right stand_tiles: " + this._playerData._standUpTiles

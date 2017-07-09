@@ -126,6 +126,12 @@ cc.Class {
         GameNetMgr = require "GameNetMgr"
         cc.vv.gameNetMgr = new GameNetMgr()
         cc.vv.gameNetMgr.initHandlers()
+        PlayersManage = require "PlayersManage"
+
+        cc.vv.playersManager = new PlayersManage()
+        cc.vv.playersManager.init()
+
+
 
         Utils = require "Utils"
         cc.vv.utils = new Utils()

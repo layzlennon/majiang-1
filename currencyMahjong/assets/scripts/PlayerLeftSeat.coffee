@@ -1,6 +1,5 @@
 cc.Class {
     extends: cc.Component
-
     properties: {
         leftStandUpTile: {
             default: null,
@@ -19,6 +18,10 @@ cc.Class {
             type: cc.Node
         },
         standNode: {
+            default: null,
+            type: cc.Node
+        },
+        playNode: {
             default: null,
             type: cc.Node
         },
@@ -45,9 +48,18 @@ cc.Class {
         cc.director.GlobalEvent.on "peng", this.peng, this
         cc.director.GlobalEvent.on "gang", this.gang, this
         cc.director.GlobalEvent.on "play", this.play, this
+        cc.director.GlobalEvent.on "refresh_all", this.refreshAll , this
+    refreshAll: (data) ->
+        # console.log " leftSeat refreshAll data " + JSON.stringify data
+        if data.seatId isnt this._seatId
+            return
+        this.init_tiles(data)
+        this.chi(data)
+        this.peng(data)
+        this.gang(data)
     init_tiles: (data) ->
 
-        console.log " init_tiles data " + JSON.stringify data
+        # console.log " init_tiles data " + JSON.stringify data
         if data.seatId isnt this._seatId
             return
         console.log " left stand_tiles: " + this._playerData._standUpTiles
@@ -59,7 +71,7 @@ cc.Class {
             tile.setPosition(cc.p(0, i * 25 * -1))
     send_tile: (data) ->
 
-        console.log " send_tile data " + JSON.stringify data
+        # console.log " send_tile data " + JSON.stringify data
         if data.seatId isnt this._seatId
             return
         console.log "left send_tile: " + this._playerData._send_tile
