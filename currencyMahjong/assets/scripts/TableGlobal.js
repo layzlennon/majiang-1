@@ -32,7 +32,7 @@ cc.director.TableGlobalData = {
     },
     getSeatId:function()
     {
-        this.seatIndex = seatId
+        return this.seatIndex;
     },
     setRoomId:function(roomId)
     {

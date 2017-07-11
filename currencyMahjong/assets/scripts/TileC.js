@@ -173,6 +173,10 @@ cc.Class({
     {
         return this.node.getPosition();
     },
+    getTileWorldSpaceARPosition:function () {
+
+        return this.node.convertToWorldSpaceAR(cc.p(0,0))
+    },
     getTileId:function()
     {
         return this._tileID;
