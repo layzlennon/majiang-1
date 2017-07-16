@@ -44,14 +44,5 @@ cc.Class({
         var tablePlayTileConfig = require('TablePlayTileConfig');
         this._playTileConfig = new tablePlayTileConfig();
         this._playTileConfig.init(this._seatId,cc.p(0,0),4);
-    },
-    playTile:function (data)
-    {
-        if (data.seatId !== this._seatId) {
-            return
-        }
     }
-
-
-
 });

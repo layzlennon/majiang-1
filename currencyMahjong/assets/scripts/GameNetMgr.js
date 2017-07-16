@@ -31,10 +31,14 @@ cc.Class({
         });
         cc.vv.net.addHandler("login_finished", function(data) {
             console.log("loagin_finished " + JSON.stringify(data));
-            if (data && data["gameBegin"]) {
+            if (data && data["gameBegin"])
+            {
                 cc.director.TableGlobalData.setGameIn(true);
-            } else {
-                cc.director.loadScene("MjGameScene");
+            }
+            else
+            {
+                //进入等待界面
+                cc.director.loadScene("MjWaittingScene");
             }
         });
         cc.vv.net.addHandler("disconnect", function() {
@@ -123,8 +127,9 @@ cc.Class({
             cc.director.TableGlobalData.setGameIn(false);
         });
         cc.vv.net.addHandler("game_begin_push", function(data) {
-            console.log("game_begin_push" + JSON.stringify(data));
-            return cc.director.TableGlobalData.setGameIn(true);
+            console.log("game_begin_push");
+            // cc.director.TableGlobalData.setGameIn(true);
+
         });
         cc.vv.net.addHandler("exit_notify_push", function(data) {
             var s, userId;
@@ -164,9 +169,10 @@ cc.Class({
         cc.vv.wc.show("正在进入房间");
         return cc.vv.net.connect(onConnectOK, onConnectFailed);
     },
-    dispatchEvent: function(event, data) {
+    dispatchEvent: function(event, data)
+    {
         if (this.dataEventHandler) {
-            return this.dataEventHandler.emit(event, data);
+            this.dataEventHandler.emit(event, data);
         }
     },
     update: function(dt) {}

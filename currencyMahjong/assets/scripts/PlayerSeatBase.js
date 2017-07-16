@@ -11,7 +11,7 @@ cc.Class({
     _playingAnTile:null,//动画牌
     _arrStandUpTiles:null, //手牌数组
     _sendTiled:null, //摸到的牌
-
+    _optionMenuData:null,
     onLoad: function(){
         this.initPlayerSeat();
         this.initGlobalEvent();
@@ -39,7 +39,7 @@ cc.Class({
         }
         console.log('init_tiles: '+JSON.stringify(data));
 
-        console.log(" left stand_tiles: " + this._playerData._standUpTiles);
+        console.log(" stand_tiles: " + this._playerData._standUpTiles);
         if(this._seatId === 3 || this._seatId === 1)
         {
             this._arrStandUpTiles = [];
@@ -87,8 +87,13 @@ cc.Class({
             this._arrStandUpTiles.push(tile);
         }
     },
-    send_tile:function (data) {
+    send_tile:function (data)
+    {
         if (data.seatId !== this._seatId) {
+            return;
+        }
+        if(this._playerData._send_tile === null)
+        {
             return;
         }
         if(this._seatId === 1)
@@ -134,18 +139,31 @@ cc.Class({
             return;
         }
         this.init_tiles(data);
+        this.send_tile(data);
         this.chi(data);
         this.peng(data);
-        return this.gang(data);
+        this.gang(data);
     },
-    chi: function() {
-        return console.log("left chi tiles : " + this._playerData._chi_tiles);
+    chi: function(data)
+    {
+        if (data.seatId !== this._seatId)
+        {
+            return;
+        }
+
+        if(this._seatId == 0)
+        {
+
+
+        }
+
+        console.log("chi tiles : " + this._playerData._chi_tiles);
     },
-    peng: function() {
-        return console.log("left peng tiles : " + this._playerData._peng_tiles);
+    peng: function(data) {
+        console.log("peng tiles : " + this._playerData._peng_tiles);
     },
-    gang: function() {
-        return console.log("left gang tiles : " + this._playerData._peng_tiles);
+    gang: function(data) {
+        console.log("gang tiles : " + this._playerData._peng_tiles);
     },
     play: function(data)
     {

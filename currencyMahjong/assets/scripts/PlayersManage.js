@@ -34,7 +34,7 @@ cc.Class({
             msg = data['result'];
             console.log("PlayersManager data : " + JSON.stringify(data));
             if (msg["action"] === "init_tiles") {
-                cc.director.GlobalEvent.emit("game_begin", {});
+                // cc.director.GlobalEvent.emit("game_begin", {});
                 for (i = k = 0; k < 4; i = ++k) {
                     localIndex = cc.director.TableGlobalData.getLocalIndex(msg['seatId']);
                     if (i === parseInt(localIndex)) {
@@ -49,10 +49,16 @@ cc.Class({
                         }, self);
                     }
                     console.log("localIndex : " + i);
-                    cc.director.GlobalEvent.emit("stand_tiles", {
-                        seatId: i
-                    });
+                    // cc.director.GlobalEvent.emit("stand_tiles", {
+                    //     seatId: i
+                    // });
+
+
                 }
+
+                cc.director.loadScene("MjGameScene");
+
+
             }
             else if (msg['action'] === "send_tile") {
                 localIndex = cc.director.TableGlobalData.getLocalIndex(msg['seatId']);
@@ -73,11 +79,15 @@ cc.Class({
                 cc.director.GlobalEvent.emit("send_tile", {
                     seatId: localIndex
                 });
+
+
             }
             else if (msg['action'] === "table_info") {
                 console.log("table_info " + JSON.stringify(msg));
+                cc.director.TableGlobalData.setGameIn(true);
+                var current_player_local_seat_id  = cc.director.TableGlobalData.getLocalIndex(msg['current_player_seat_id']);
                 players = msg['players'];
-                for (i = l = 0, ref = players.length; 0 <= ref ? l < ref : l > ref; i = 0 <= ref ? ++l : --l) {
+                for (var i = 0; i < players.length; i++) {
                     player = players[i];
                     localIndex = cc.director.TableGlobalData.getLocalIndex(player['seatId']);
                     parseMsg = {
@@ -86,12 +96,27 @@ cc.Class({
                         gang_tiles: player['gang_tiles'],
                         chi_tiles: player['chi_tiles']
                     };
+                    if(i !== 0 && current_player_local_seat_id === i)
+                    {
+                        parseMsg['send_tile'] = -1;
+                    }
                     self._players[localIndex].refreshTiles(parseMsg, self);
                 }
                 cc.director.loadScene("MjGameScene");
             }
             else if (msg['action'] === "play")
             {
+                /**
+                 * {
+                        "cmd":"table_call",
+                        "result"={
+                            "action":"play",
+                            "seatId":1;
+                            "tile":8
+                            "peng_action":8
+                        }
+                 }
+                 */
                 var localIndex = cc.director.TableGlobalData.getLocalIndex(msg['seatId']);
                 var playTile = msg['tile'];
                 self._players[localIndex].dropTiles(playTile, cc.p(0,0), true);
@@ -99,6 +124,17 @@ cc.Class({
                 cc.director.GlobalEvent.emit("play", {
                     seatId: localIndex
                 });
+                msg['peng_action'] = 1;
+                if(msg['peng_action'] || msg['chi_action'] || msg['gang_action'] || msg['win_action'])
+                {
+                    cc.director.GlobalEvent.emit("chi_peng_gang", {
+                        seatId: 0,
+                        optionMenuJson:msg
+                    });
+                }
+
+                // this._arrPlayerModel[mj.SEAT_DOWN].checkOption(msg);
+
             }
         });
     },

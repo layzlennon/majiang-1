@@ -175,7 +175,7 @@ cc.Class({
     },
     getTileWorldSpaceARPosition:function () {
 
-        return this.node.convertToWorldSpaceAR(cc.p(0,0))
+        this.node.convertToWorldSpaceAR(cc.p(0,0))
     },
     getTileId:function()
     {

@@ -33,60 +33,21 @@ cc.Class({
         return b - a
 
     },
-    getPlayedTilePosition:function(tileIndex, tileSize)
+    //或许当前时分秒
+    getNowTimeHM:function ()
     {
-        // 行列数
-        var rowCount = this._arrPlayTileCount[0];
-        var colCount = this._arrPlayTileCount[1];
-        var count = rowCount * colCount;
-        var isSecondFloor = tileIndex >= count;
-        tileIndex %= count;
-
-        var p = cc.p(0, 0), rowIndex = 0, colIndex = 0;
-
-        // 排列用的大小
-        var size = cc.size(tileSize.width * mjv.TablePlayerConfig.PLAY_TILE_SIZE_F.x, tileSize.height * mjv.TablePlayerConfig.PLAY_TILE_SIZE_F.y);
-        switch(this._seatIndex)
-        {
-            case mj.SEAT_DOWN:
-            {
-                rowIndex = Math.floor(tileIndex / colCount);
-                colIndex = Math.floor(tileIndex % colCount);
-                p.x = this._playTileStart.x + colIndex * size.width;
-                p.y = this._playTileStart.y + rowIndex * size.height;
-                break;
-            }
-            case mj.SEAT_RIGHT:
-            {
-                rowIndex = Math.floor(tileIndex % rowCount);
-                colIndex = Math.floor(tileIndex / rowCount);
-                p.x = this._playTileStart.x + size.width * colCount - (colIndex + 1) * size.width;
-                p.y = this._playTileStart.y + rowIndex * size.height;
-                break;
-            }
-            case mj.SEAT_UP:
-            {
-                rowIndex = Math.floor(tileIndex / colCount);
-                colIndex = Math.floor(tileIndex % colCount);
-                p.x = this._playTileStart.x + size.width * colCount - (colIndex + 1) * size.width;
-                p.y = this._playTileStart.y + size.height * rowCount - (rowIndex + 1) * size.height;
-                break;
-            }
-            case mj.SEAT_LEFT:
-            {
-                rowIndex = Math.floor(tileIndex % rowCount);
-                colIndex = Math.floor(tileIndex / rowCount);
-                p.x = this._playTileStart.x + colIndex * size.width;
-                p.y = this._playTileStart.y + size.height * rowCount - (rowIndex + 1) * size.height;
-                break;
-            }
+        var date = new Date();
+        var h = date.getHours();
+        if (h < 10) {
+            h = "0" + h;
         }
-
-        // 第二层牌，偏移
-        if(isSecondFloor)
-        {
-            p.y += mj.Const.TILE_SECOND_FLOOR_Y_OFFSET;
+        var m = date.getMinutes();
+        if (m < 10) {
+            m = "0" + m;
         }
-        return p;
-    },
+        else {
+            m = m;
+        }
+        return {hours:h,minutes:m}
+    }
 });

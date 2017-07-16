@@ -6,8 +6,8 @@ cc.Class({
         _peng_tiles: null,
         _gang_tiles: null,
         _drop_tiles: null,
-        _send_tile: -1,
-        _play_tile: -1,
+        _send_tile: null,
+        _play_tile: null,
         _index: -1,
         _parentNode: null,
         _standComponentList: [],
@@ -24,13 +24,12 @@ cc.Class({
     },
     onInit:function()
     {
+
         this._standUpTiles = []
         this._chi_tiles = []
         this._peng_tiles = []
         this._gang_tiles = []
         this._drop_tiles = []
-        this._tile = -1
-        this._standComponentList = []
     },
     refreshBaseInfo:function(seatInfo)
     {
@@ -60,9 +59,9 @@ cc.Class({
             return;
         }
 
-        if(this._standUpTiles[0] == cc.director.TableGlobalData.invalid_tile_id)
+        if(this._standUpTiles[0] === cc.director.TableGlobalData.invalid_tile_id)
         {
-            if(this._send_tile != null)
+            if(this._send_tile !== null)
             {
                 this._send_tile = null;
             }

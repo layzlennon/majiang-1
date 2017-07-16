@@ -14,7 +14,7 @@ cc.Class({
     onLoad: function() {
         this.initView();
         this.initEventHandlers();
-        return this.initSeats();
+        this.initSeats();
     },
     initSeats: function() {
         var i, j, ref, results, seatData;
@@ -45,11 +45,11 @@ cc.Class({
         }
     },
     initView: function() {
-        var component, i, j, quitButton, ref, seatComponent, seatReady, seatsNode;
+        var component, quitButton, seatComponent, seatReady, seatsNode;
         this._seatsData = cc.director.TableGlobalData.getSeats();
         seatReady = this.node.getChildByName("SeatReady");
         seatsNode = seatReady.getChildByName("Seats");
-        for (i = j = 0, ref = seatsNode.children.length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+        for (var i = 0; i < seatsNode.children.length; i++) {
             seatComponent = seatsNode.children[i].getComponent("Seat");
             this._seats.push(seatComponent);
         }
@@ -102,25 +102,12 @@ cc.Class({
         return cc.vv.net.send("ready");
     },
     update: function(dt) {
-        var date, h, m, minutes;
-        minutes = Date.now() / 1000 / 60;
-        minutes = Math.floor(minutes);
+        var minutes = Date.now() / 1000 / 60;
+        var minutes = Math.floor(minutes);
         if (this._lastMinute !== minutes) {
             this._lastMinute = minutes;
-            date = new Date();
-            h = date.getHours();
-            if (h < 10) {
-                h = "0" + h;
-            } else {
-                h;
-            }
-            m = date.getMinutes();
-            if (m < 10) {
-                m = "0" + m;
-            } else {
-                m = m;
-            }
-            return this._timeLabel.string = "" + h + ":" + m;
+            var localTime = cc.vv.utils.getNowTimeHM();
+            this._timeLabel.string = "" + localTime["hours"] + ":" + localTime["minutes"];
         }
     }
 });
